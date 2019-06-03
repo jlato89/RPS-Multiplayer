@@ -1,0 +1,30 @@
+body {
+   background: url(../images/bg.jpg);
+}
+Header {
+   text-align: center;
+   color: antiquewhite;
+}
+#game-area {
+   background: blue;
+   width: 70vw;
+   height: 80vh;
+   text-align: center;
+   margin: auto;
+}
+#results {
+   background: green;
+   height: 30%;
+}
+#stats {
+   background: grey;
+   height: 10%;
+}
+#game-buttons {
+   background: teal;
+   height: 30%;
+}
+#chat-box {
+   background: darkgray;
+   height: 30%;
+}
