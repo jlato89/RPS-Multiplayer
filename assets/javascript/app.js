@@ -14,12 +14,13 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
 // Global Variables
-var player;
+var playerID = 0;
+var playersReady;
 var userSelection;
 var opponentSelection;
 var wins = 0;
 var losses = 0;
-var playerNum;
+var dbConnections;
 
 // --- Persistance code --- //
 // connectionsRef references a specific location in our database.
@@ -48,59 +49,67 @@ connectedRef.on("value", function(snap) {
 connectionsRef.on("value", function(snapshot) {
 
    // The number of online users is the number of children in the connections list.
-   playerNum = snapshot.numChildren();
-   console.log('DB Connections: ', playerNum);
- });
+   dbConnections = snapshot.numChildren();
+   console.log('DB Connections: ', dbConnections);
+
+   // Check whether there is only 1 connection to DB, if so reset active players to 0
+   if (dbConnections <= 1) {
+      database.ref("/").update({
+         playersReady: 0
+      });
+      database.ref("/selections").remove();
+   }
+});
 // --- End of Persistance code --- //
 
 // Main Process
 $(document).ready(function() {
 
    // Check to see how many players are ready
-   database.ref("players").on("value", function(snapshot) {
-      console.log("DB players: "+snapshot.val());
+   database.ref("playersReady").on("value", function(snapshot) {
+      console.log("DB Players Ready: "+snapshot.val());
 
-      player = snapshot.val();
+      playersReady = snapshot.val(); //* checks how many players are ready.
    });
 
+//  !START BUTTON!  // 
    // On start of game, assign player number then show game buttons. 
    // If players is above 2, then show alert/error.
    $("#startBtn").on("click", function() {
 
-      if (player < 2) {
+      if (playersReady < 2) {
          // console.log('IF -> playerNum: ', playerNum);
-         player++;
-         console.log("You are player "+player);
+         playerID = playersReady + 1;
+         playersReady++;
+         console.log("You are player "+playerID);
+
          $("#startBtn").hide();
          $("#game-buttons").css("visibility", "visible");
 
          database.ref("/").update({
-            players: player
-          });        
-      }
-      // else if (playerNum === 2) {
-      //    console.log('IF -> playerNum: ', playerNum);
-      //    player = 2;
-      //    console.log("You are player 2");
-      //    $("#startBtn").hide();
-      //    $("#game-buttons").css("visibility", "visible");
-      // }
+            playersReady: playersReady
+         });        
+      } 
       else {alert("Only 2 players are allowed at a time!")}
    })
 
+
+//  !GAME PROCESS!  //   
    // On game button click, send to database and then show to DOM.
    $(".game-btns").on("click", function() {
-      selection = $(this).attr("alt");
-      selectionImg = $(this).attr("src");
-      playerName = "Player "+player;
-      console.log(selection + " button clicked");
+      if (player === 2) {
+         selection = $(this).attr("alt");
+         selectionImg = $(this).attr("src");
+         playerName = "Player "+player;
+         console.log(selection + " button clicked");
 
-      database.ref("/selections").update({
-         [playerName]: selection
-       });
-     
-   // post selection to user-selection in DOM
-      $("#user-selection").attr("src", selectionImg);
+         database.ref("/selections").update({
+            [playerName]: selection
+         });
+      
+      // post selection to user-selection in DOM
+         $("#user-selection").attr("src", selectionImg);
+      }
+      else {alert("2nd player isn't ready yet")}
    });
-
 });
