@@ -23,6 +23,7 @@ Header {
 #game-buttons {
    background: teal;
    height: 30%;
+   visibility: hidden;
 }
 #chat-box {
    background: darkgray;
