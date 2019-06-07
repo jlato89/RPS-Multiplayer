@@ -97,10 +97,10 @@ $(document).ready(function() {
 //  !GAME PROCESS!  //   
    // On game button click, send to database and then show to DOM.
    $(".game-btns").on("click", function() {
-      if (player === 2) {
+      if (playersReady === 2) {
          selection = $(this).attr("alt");
          selectionImg = $(this).attr("src");
-         playerName = "Player "+player;
+         playerName = "Player "+playerID;
          console.log(selection + " button clicked");
 
          database.ref("/selections").update({
