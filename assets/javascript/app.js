@@ -14,16 +14,17 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
 // Global Variables
+var player = 0
 var userSelection;
 var opponentSelection;
 var wins = 0;
 var losses = 0;
+var playerNum;
 
 // --- Persistance code --- //
 // connectionsRef references a specific location in our database.
 // All of our connections will be stored in this directory.
 var connectionsRef = database.ref("/connections");
-
 // '.info/connected' is a special location provided by Firebase that is updated every time
 // the client's connection state changes.
 // '.info/connected' is a boolean value, true if the client is connected and false if they are not.
@@ -42,14 +43,65 @@ connectedRef.on("value", function(snap) {
     con.onDisconnect().remove();
   }
 });
+
+// When first loaded or when the connections list changes...
+connectionsRef.on("value", function(snapshot) {
+
+   // The number of online users is the number of children in the connections list.
+   playerNum = snapshot.numChildren();
+   console.log('DB Connections: ', playerNum);
+ });
 // --- End of Persistance code --- //
 
+// Main Process
+$(document).ready(function() {
 
-$(".game-btns").on("click", function() {
-   selection = $(this).attr("alt");
-   selectionImg = $(this).attr("src");
-   console.log(selection + " button clicked");
+   // Check to see how many players are ready
+   database.ref("players").on("value", function(snapshot) {
+      console.log("DB players: "+snapshot.val());
+   });
 
-// post selection to p1-selection in DOM
-   $("#user-selection").attr("src", selectionImg);
+   // On start of game, assign player number then show game buttons. 
+   // If players is above 2, then show alert/error.
+   $("#startBtn").on("click", function() {
+
+      if (player < 2) {
+         // console.log('IF -> playerNum: ', playerNum);
+         player++;
+         console.log("You are player "+player);
+         $("#startBtn").hide();
+         $("#game-buttons").css("visibility", "visible");
+
+         database.ref("/").update({
+            players: player
+          });        
+      }
+      // else if (playerNum === 2) {
+      //    console.log('IF -> playerNum: ', playerNum);
+      //    player = 2;
+      //    console.log("You are player 2");
+      //    $("#startBtn").hide();
+      //    $("#game-buttons").css("visibility", "visible");
+      // }
+      else {
+         console.log('IF -> player: ', player);
+         alert("Only 2 players are allowed at a time!")
+      }
+   })
+
+   // On game button click, send to database and then show to DOM.
+   $(".game-btns").on("click", function() {
+      selection = $(this).attr("alt");
+      selectionImg = $(this).attr("src");
+      playerName = "Player "+player;
+      console.log(selection + " button clicked");
+
+      database.ref("/selections").update({
+         [playerName]: selection
+       });
+     
+   // post selection to user-selection in DOM
+      $("#user-selection").attr("src", selectionImg);
+   });
+
 });
