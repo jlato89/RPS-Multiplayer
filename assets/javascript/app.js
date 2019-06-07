@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
 // Global Variables
-var player = 0
+var player;
 var userSelection;
 var opponentSelection;
 var wins = 0;
@@ -59,6 +59,8 @@ $(document).ready(function() {
    // Check to see how many players are ready
    database.ref("players").on("value", function(snapshot) {
       console.log("DB players: "+snapshot.val());
+
+      player = snapshot.val();
    });
 
    // On start of game, assign player number then show game buttons. 
@@ -83,10 +85,7 @@ $(document).ready(function() {
       //    $("#startBtn").hide();
       //    $("#game-buttons").css("visibility", "visible");
       // }
-      else {
-         console.log('IF -> player: ', player);
-         alert("Only 2 players are allowed at a time!")
-      }
+      else {alert("Only 2 players are allowed at a time!")}
    })
 
    // On game button click, send to database and then show to DOM.
