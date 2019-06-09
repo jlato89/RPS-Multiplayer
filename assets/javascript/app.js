@@ -116,11 +116,13 @@ $(document).ready(function() {
    // Check to see when both users have a selection
    database.ref("/selections").on("value", function(snapshot) {
     var selections = snapshot.numChildren();
+    var p1 = snapshot.child("selections/Player 2").val();
+    console.log('p1: ', p1);
     if (selections === 2) {
       console.log("Both users have made their selection");
 
       if (playerID === 1) {
-        //! query player 2's selection from DB, then display it to the DOM
+         // $("#opponent-selection").attr("src", )
       }
       if (playerID === 2) {
         //! query player 1's selection from DB, then display it to the DOM
