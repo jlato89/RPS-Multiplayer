@@ -16,7 +16,7 @@ var database = firebase.database();
 // Global Variables
 var playerID = 0;
 var playersReady;
-var userSelection;
+var userSelection = 0;
 var opponentSelection;
 var wins = 0;
 var losses = 0;
@@ -61,6 +61,14 @@ connectionsRef.on("value", function (snapshot) {
    }
 });
 // --- End of Persistance code --- //
+// FUNCTIONS
+function nextRound() {
+   database.ref("/selections").remove();
+   userSelection = 0;
+
+   $("#user-selection").attr("src", "#");
+   $("#opponent-selection").attr("src", "#");
+}
 
 // Main Process
 $(document).ready(function () {
@@ -97,7 +105,7 @@ $(document).ready(function () {
    //  !GAME PROCESS!  //   
    // On game button click, send to database and then show to DOM.
    $(".game-btns").on("click", function () {
-      if (userSelection) { console.log("You've already made a selection"); }
+      if (userSelection !== 0) { console.log("You've already made a selection"); }
       else if (playersReady === 2) {
          selectionImg = $(this).attr("src");
          playerName = "P" + playerID;
@@ -135,9 +143,8 @@ $(document).ready(function () {
          if (playerID === 2) {
             $("#opponent-selection").attr('src', snapshot.val().P1);
          }
-      }
 
-      // Determine winner
-      
+         setTimeout(nextRound, 8000);
+      }      
    });
 });
