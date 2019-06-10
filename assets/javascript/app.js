@@ -97,11 +97,10 @@ $(document).ready(function () {
    //  !GAME PROCESS!  //   
    // On game button click, send to database and then show to DOM.
    $(".game-btns").on("click", function () {
-      if (playersReady === 2) {
-         selection = $(this).attr("alt");
+      if (userSelection) { console.log("You've already made a selection"); }
+      else if (playersReady === 2) {
          selectionImg = $(this).attr("src");
          playerName = "P" + playerID;
-         console.log(selection + " button clicked");
 
          database.ref("/selections").update({
             [playerName]: selectionImg
@@ -109,6 +108,9 @@ $(document).ready(function () {
 
          // post selection to user-selection in DOM
          $("#user-selection").attr("src", selectionImg);
+
+         // Set userSelection to true so selection cannot be changed.
+         userSelection = true;
       }
       else { alert("2nd player isn't ready yet") }
    });
