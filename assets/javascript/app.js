@@ -17,9 +17,10 @@ var database = firebase.database();
 var playerID = 0;
 var playersReady;
 var userSelection = 0;
-var opponentSelection;
+var opponentSelection = 0;
 var wins = 0;
 var losses = 0;
+var ties = 0;
 var dbConnections;
 
 // --- Persistance code --- //
@@ -65,9 +66,34 @@ connectionsRef.on("value", function (snapshot) {
 function nextRound() {
    database.ref("/selections").remove();
    userSelection = 0;
+   opponentSelection = 0;
 
    $("#user-selection").attr("src", "#");
    $("#opponent-selection").attr("src", "#");
+   $("#wins").html("Wins: "+wins);
+   $("#losses").html("Losses: "+losses);
+}
+function results() {
+   var r = "https://via.placeholder.com/100x100?text=Rock";
+   var p = "https://via.placeholder.com/100x100?text=Paper";
+   var s = "https://via.placeholder.com/100x100?text=Scissors";
+
+   if ((userSelection === r && opponentSelection === s) ||
+      (userSelection === s && opponentSelection === p) ||
+      (userSelection === p && opponentSelection === r)) {
+      console.log("User WINS");
+      $("#win-lose").html("WIN")
+      wins++;
+   } else if (userSelection === opponentSelection) {
+      console.log("User TIES");
+      $("#win-lose").html("TIE")
+      ties++;
+   } else {
+      console.log("User LOSSES");
+      $("#win-lose").html("LOSE")
+      losses++;
+   }
+
 }
 
 // Main Process
@@ -112,9 +138,9 @@ $(document).ready(function () {
 
          database.ref("/selections").update({
             [playerName]: selectionImg
-         }).then(function() {
+         }).then(function () {
             return database.ref("/selections").once("value");
-          }).then(function(snapshot) {
+         }).then(function (snapshot) {
             var data = snapshot.val();
             if (playerID === 1) {
                userSelection = data.P1;
@@ -123,7 +149,7 @@ $(document).ready(function () {
                userSelection = data.P2;
             }
             $("#user-selection").attr("src", userSelection);
-          });
+         });
 
          // post selection to user-selection from DB to DOM
       }
@@ -132,19 +158,26 @@ $(document).ready(function () {
 
    database.ref("/selections").on("value", function (snapshot) {
       var selections = snapshot.numChildren();
-      
       // Check to see when both users have a selection
       if (selections === 2) {
          console.log("Both users have made their selection");
 
          if (playerID === 1) {
+            opponentSelection = snapshot.val().P2;
+            console.log('opponentSelection: ', opponentSelection);
+
             $("#opponent-selection").attr('src', snapshot.val().P2);
          }
          if (playerID === 2) {
+            opponentSelection = snapshot.val().P1;
+            console.log('opponentSelection: ', opponentSelection);
+
             $("#opponent-selection").attr('src', snapshot.val().P1);
          }
-
-         setTimeout(nextRound, 8000);
-      }      
+         // wait .5 sec and check results
+         setTimeout(results, 500);
+         // Wait 8 secs then start next round
+         setTimeout(nextRound, 8000); //! uncomment when not testing anymore
+      }
    });
 });
