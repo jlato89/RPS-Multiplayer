@@ -104,21 +104,28 @@ $(document).ready(function () {
 
          database.ref("/selections").update({
             [playerName]: selectionImg
-         });
+         }).then(function() {
+            return database.ref("/selections").once("value");
+          }).then(function(snapshot) {
+            var data = snapshot.val();
+            if (playerID === 1) {
+               userSelection = data.P1;
+            }
+            if (playerID === 2) {
+               userSelection = data.P2;
+            }
+            $("#user-selection").attr("src", userSelection);
+          });
 
-         // post selection to user-selection in DOM
-         $("#user-selection").attr("src", selectionImg);
-
-         // Set userSelection to true so selection cannot be changed.
-         userSelection = true;
+         // post selection to user-selection from DB to DOM
       }
       else { alert("2nd player isn't ready yet") }
    });
 
-   // Check to see when both users have a selection
    database.ref("/selections").on("value", function (snapshot) {
       var selections = snapshot.numChildren();
-
+      
+      // Check to see when both users have a selection
       if (selections === 2) {
          console.log("Both users have made their selection");
 
@@ -129,5 +136,8 @@ $(document).ready(function () {
             $("#opponent-selection").attr('src', snapshot.val().P1);
          }
       }
+
+      // Determine winner
+      
    });
 });
