@@ -26,6 +26,9 @@ Header {
    justify-content: space-around;
    font-size: 1.5rem;
 }
+#startBtn:hover {
+   cursor: pointer;
+}
 #game-buttons {
    background: teal;
    height: 30%;
