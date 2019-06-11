@@ -16,9 +16,15 @@ Header {
    background: green;
    height: 30%;
 }
+   #win-lose {
+      font-size: 2rem;
+   }
 #stats {
    background: grey;
    height: 10%;
+   display: flex;
+   justify-content: space-around;
+   font-size: 1.5rem;
 }
 #game-buttons {
    background: teal;
@@ -29,3 +35,7 @@ Header {
    background: darkgray;
    height: 30%;
 }
+   #chat-box-form {
+      display: flex;
+      justify-content: center;   
+   }

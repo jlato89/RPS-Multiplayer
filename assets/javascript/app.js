@@ -70,8 +70,8 @@ function nextRound() {
 
    $("#user-selection").attr("src", "#");
    $("#opponent-selection").attr("src", "#");
-   $("#wins").html("Wins: "+wins);
-   $("#losses").html("Losses: "+losses);
+   $("#wins").append(wins);
+   $("#losses").append(losses);
 }
 function results() {
    var r = "https://via.placeholder.com/100x100?text=Rock";
@@ -179,5 +179,29 @@ $(document).ready(function () {
          // Wait 8 secs then start next round
          setTimeout(nextRound, 8000); //! uncomment when not testing anymore
       }
+   });
+
+   //! ChatBox section
+   // Submit button
+   $("form").submit(function() {
+      event.preventDefault();
+      var name = "Player"+playerID;
+      var comment = $("#chat-box-text").val().trim();
+      console.log('name: ', name);
+      console.log('comment: ', comment);
+
+      database.ref("/comments").set({
+         name: name,
+         comment: comment
+      });
+      $("#chat-box-text").val("")
+   });
+
+   // Check to see if there are any new msgs
+   database.ref("/comments").on("value", function (snapshot) {
+      var displayName = snapshot.name;
+      var displayComment = snapshot.comment;
+      
+      $("#chat-box-comments").text(displayName+" : "+displayComment);
    });
 });

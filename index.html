@@ -23,13 +23,14 @@
     <!-- Results -->
     <div id="results">
       <img id="user-selection" src="#" alt="User Selection">
-      <span id="win-loss">WIN/LOSE</span>
+      <span id="win-lose"></span>
       <img id="opponent-selection" src="#" alt="Opponent Selection">
     </div>
 
     <!-- Stats -->
     <div id="stats">
-      <span id="wins">Wins: </span><span id="losses">Losses: </span>
+        <span id="wins">Wins: 0</span>
+        <span id="losses">Losses: 0</span>
     </div>
 
     <!-- Game Buttons -->
@@ -41,7 +42,13 @@
     </div>
 
     <!-- Chat Box -->
-    <div id="chat-box">CHAT BOX</div>
+    <div id="chat-box">
+      <form id="chat-box-form">
+        <input type="text" name="comment" id="chat-box-text">
+        <input type="button" value="Submit" id="submit-btn">
+      </form>
+      <div id="chat-box-comments"></div>
+    </div>
   </div>
 
   <!-- Javascript -->
