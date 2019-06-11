@@ -34,8 +34,18 @@ Header {
 #chat-box {
    background: darkgray;
    height: 30%;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
 }
+   .lrg-text {
+      font-size: 1.2rem;
+      font-weight: bold;
+   }
+   #chat-box-comments {
+      text-align: left;
+      overflow: auto;
+   }
    #chat-box-form {
-      display: flex;
       justify-content: center;   
    }
