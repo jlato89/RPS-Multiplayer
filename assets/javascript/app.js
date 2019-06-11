@@ -69,11 +69,12 @@ function nextRound() {
    database.ref("/selections").remove();
    userSelection = 0;
    opponentSelection = 0;
+   var defaultImg = "https://via.placeholder.com/100x100?text=?"
 
-   $("#user-selection").attr("src", "#");
-   $("#opponent-selection").attr("src", "#");
-   $("#wins").append(wins);
-   $("#losses").append(losses);
+   $("#user-selection").attr("src", defaultImg);
+   $("#opponent-selection").attr("src", defaultImg);
+   $("#wins").text("Wins: "+wins);
+   $("#losses").text("Losses: "+losses);
 }
 function results() {
    var r = "https://via.placeholder.com/100x100?text=Rock";
