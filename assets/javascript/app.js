@@ -59,6 +59,8 @@ connectionsRef.on("value", function (snapshot) {
          playersReady: 0
       });
       database.ref("/selections").remove();
+      // Remove comments as well
+      database.ref("/comments").remove();
    }
 });
 // --- End of Persistance code --- //
@@ -177,7 +179,7 @@ $(document).ready(function () {
          // wait .5 sec and check results
          setTimeout(results, 500);
          // Wait 8 secs then start next round
-         setTimeout(nextRound, 8000); //! uncomment when not testing anymore
+         setTimeout(nextRound, 8000);
       }
    });
 
@@ -185,23 +187,27 @@ $(document).ready(function () {
    // Submit button
    $("form").submit(function() {
       event.preventDefault();
-      var name = "Player"+playerID;
-      var comment = $("#chat-box-text").val().trim();
-      console.log('name: ', name);
-      console.log('comment: ', comment);
+      if (playerID === 0) { alert("Please click the start button to chat.") }
+      else {
+         var name = "Player"+playerID;
+         var comment = $("#chat-box-text").val().trim();
+         console.log('name: ', name);
+         console.log('comment: ', comment);
 
-      database.ref("/comments").set({
-         name: name,
-         comment: comment
-      });
-      $("#chat-box-text").val("")
+         database.ref("/comments").push({
+            name: name,
+            comment: comment
+         });
+         $("#chat-box-text").val("")
+      }
    });
 
    // Check to see if there are any new msgs
-   database.ref("/comments").on("value", function (snapshot) {
-      var displayName = snapshot.name;
-      var displayComment = snapshot.comment;
+   database.ref("/comments").on("child_added", function (snapshot) {
+      var database = snapshot.val();
+      var displayName = database.name;
+      var displayComment = database.comment;
       
-      $("#chat-box-comments").text(displayName+" : "+displayComment);
+      $("#chat-box-comments").append("<div><strong>"+displayName+": </strong>"+displayComment+"</div>");
    });
 });
