@@ -51,7 +51,7 @@ connectionsRef.on("value", function (snapshot) {
 
    // The number of online users is the number of children in the connections list.
    dbConnections = snapshot.numChildren();
-   console.log('DB Connections: ', dbConnections);
+   
 
    // Check whether there is only 1 connection to DB, if so reset active players to 0
    if (dbConnections <= 1) {
@@ -84,15 +84,15 @@ function results() {
    if ((userSelection === r && opponentSelection === s) ||
       (userSelection === s && opponentSelection === p) ||
       (userSelection === p && opponentSelection === r)) {
-      console.log("User WINS");
+      
       $("#win-lose").html("WIN")
       wins++;
    } else if (userSelection === opponentSelection) {
-      console.log("User TIES");
+      
       $("#win-lose").html("TIE")
       ties++;
    } else {
-      console.log("User LOSSES");
+      
       $("#win-lose").html("LOSE")
       losses++;
    }
@@ -104,7 +104,7 @@ $(document).ready(function () {
 
    // Check to see how many players are ready
    database.ref("playersReady").on("value", function (snapshot) {
-      console.log("DB Players Ready: " + snapshot.val());
+      
 
       playersReady = snapshot.val(); //* checks how many players are ready.
    });
@@ -115,10 +115,10 @@ $(document).ready(function () {
    $("#startBtn").on("click", function () {
 
       if (playersReady < 2) {
-         // console.log('IF -> playerNum: ', playerNum);
+         // 
          playerID = playersReady + 1;
          playersReady++;
-         console.log("You are player " + playerID);
+         
 
          $("#startBtn").hide();
          $("#game-buttons").css("visibility", "visible");
@@ -134,7 +134,7 @@ $(document).ready(function () {
    //  !GAME PROCESS!  //   
    // On game button click, send to database and then show to DOM.
    $(".game-btns").on("click", function () {
-      if (userSelection !== 0) { console.log("You've already made a selection"); }
+      if (userSelection !== 0) {  }
       else if (playersReady === 2) {
          selectionImg = $(this).attr("src");
          playerName = "P" + playerID;
@@ -163,17 +163,17 @@ $(document).ready(function () {
       var selections = snapshot.numChildren();
       // Check to see when both users have a selection
       if (selections === 2) {
-         console.log("Both users have made their selection");
+         
 
          if (playerID === 1) {
             opponentSelection = snapshot.val().P2;
-            console.log('opponentSelection: ', opponentSelection);
+            
 
             $("#opponent-selection").attr('src', snapshot.val().P2);
          }
          if (playerID === 2) {
             opponentSelection = snapshot.val().P1;
-            console.log('opponentSelection: ', opponentSelection);
+            
 
             $("#opponent-selection").attr('src', snapshot.val().P1);
          }
@@ -192,8 +192,8 @@ $(document).ready(function () {
       else {
          var name = "Player"+playerID;
          var comment = $("#chat-box-text").val().trim();
-         console.log('name: ', name);
-         console.log('comment: ', comment);
+         
+         
 
          database.ref("/comments").push({
             name: name,
